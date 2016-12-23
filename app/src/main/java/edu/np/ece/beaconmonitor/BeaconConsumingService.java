@@ -26,7 +26,8 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
 
     private static final String REGION_NAME = "MonitoringBeacon";
 //    private static final String REGION_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
-    private static final String REGION_UUID = "23A01AF0-232A-4518-9C0E-323FB773F5EF";
+//    private static final String REGION_UUID = "23A01AF0-232A-4518-9C0E-323FB773F5EF";
+    private static final String REGION_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String INTENT_NAME_TOAST = "edu.np.ece.beaconmonitor.toast";
 
     public BeaconConsumingService() {

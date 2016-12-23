@@ -13,6 +13,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -46,8 +48,23 @@ public class MainActivity extends AppCompatActivity {
             startService(mServiceIntent);
         }
 
-//        beaconManager = BeaconManager.getInstanceForApplication(this);
-//        beaconManager.bind(this);
+        Button ATK_BLE_Button = (Button) findViewById(R.id.clearBtn);
+        ATK_BLE_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try
+                {
+                    Intent intent = new Intent(MainActivity.this, BeaconRangingService.class);
+                    stopService(intent);
+
+                    startService(intent);
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         checkPermissions();
     }
 
@@ -69,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         if (this.getIntent() != null) {
             String message = this.getIntent().getStringExtra("message");
             if (message != null) {
-                TextView textView = (TextView) this.findViewById(R.id.textView);
-                textView.setText(message);
+//                TextView textView = (TextView) this.findViewById(R.id.textView);
+//                textView.setText(message);
             }
         }
     }
@@ -125,38 +142,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-//    @Override
-//    public void onBeaconServiceConnect() {
-//        Log.d(TAG, "onBeaconServiceConnect()");
-//
-//        try {
-//            beaconManager.stopMonitoringBeaconsInRegion(new Region("AnyBeacon", null, null, null));
-//        } catch (RemoteException e) {
-//        }
-//
-//        beaconManager.addMonitorNotifier(new MonitorNotifier() {
-//
-//            @Override
-//            public void didEnterRegion(Region region) {
-//                Log.i(TAG, "didEnterRegion(): " + region.getUniqueId());
-//            }
-//
-//            @Override
-//            public void didExitRegion(Region region) {
-//                Log.i(TAG, "didExitRegion(): " + region.getUniqueId());
-//            }
-//
-//            @Override
-//            public void didDetermineStateForRegion(int state, Region region) {
-//                Log.d(TAG, "didDetermineStateForRegion(): " + String.valueOf(state) + " " + region.getUniqueId());
-//            }
-//        });
-//
-////        try {
-////            beaconManager.startMonitoringBeaconsInRegion(
-////                    new Region(REGION_NAME, Identifier.parse(REGION_UUID), null, null));
-////        } catch (RemoteException e) {
-////        }
-//    }
 }

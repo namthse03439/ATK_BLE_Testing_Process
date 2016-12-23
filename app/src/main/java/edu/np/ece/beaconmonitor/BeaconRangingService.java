@@ -6,7 +6,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
+import android.widget.EditText;
 
 import com.google.gson.JsonObject;
 
@@ -14,7 +14,6 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.Identifier;
-import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
@@ -39,8 +38,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
     private ArrayList<String> beaconList;
 
     private static final String INTENT_NAME_TOAST = "edu.np.ece.beaconmonitor.toast";
-//    private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
-    private static final String LESSON_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
+//    private static final String LESSON_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String LESSON_NAME = "LessonBeacon";
 
     private static boolean isTimeUp = false;
@@ -104,9 +103,9 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
                 Log.d(TAG, "didRangeBeaconsInRegion(): " + region.getUniqueId());
 
                 // Notify to finish collecting data
-                Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
-                broadcastIntent.putExtra("message", "didRangeBeaconsInRegion() is called.");
-                sendBroadcast(broadcastIntent);
+//                Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
+//                broadcastIntent.putExtra("message", "didRangeBeaconsInRegion() is called.");
+//                sendBroadcast(broadcastIntent);
 
                 if (region.getUniqueId().compareToIgnoreCase(LESSON_NAME) == 0)
                 {
@@ -120,7 +119,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
             Region lessonRegion = new Region(LESSON_NAME, identifier, null, null);
             beaconManager.startRangingBeaconsInRegion(lessonRegion);
 
-            new CountDownTimer(5000, 1000) {
+            new CountDownTimer(30000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
 
@@ -164,15 +163,34 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         isDataSent = true;
 
         // Notify to finish collecting data
+        String content = null;
+
         Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
-        broadcastIntent.putExtra("message", "Sending data to Server");
+        if (beaconList.size() > 0)
+        {
+            broadcastIntent.putExtra("message", "Sending data to Server\n"
+                    + "(" + Preferences.student_major + ", " + Preferences.student_minor + " )\n"
+                    + "(" + beaconList.get(0) + ", " + beaconList.get(1) + " )" );
+        }
+        else
+        {
+            broadcastIntent.putExtra("message", "Did not find any beacons in range");
+        }
         sendBroadcast(broadcastIntent);
 
-        int count = 1;
+        if (beaconList.size() == 0)
+        {
+            return;
+        }
+
+        int count = 2;
         String temp = null;
         String major = "major";
         String minor = "minor";
         JsonObject toUp = new JsonObject();
+
+        toUp.addProperty("major1", Preferences.student_major);
+        toUp.addProperty("minor1", Preferences.student_minor);
 
         for(int i = 0; i < beaconList.size(); i++)
         {
@@ -202,10 +220,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
 
                     if (messageCode == 200) // SUCCESS
                     {
-                        Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
-                        broadcastIntent.putExtra("message", "Sent data to Server successfully!");
-                        sendBroadcast(broadcastIntent);
-
+                        Preferences.notify(getApplicationContext(), "ATK_BLE", "Attendance recorded successfully for subject MAC101.");
                     }
                     else
                     {
@@ -222,7 +237,6 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
                 t.printStackTrace();
             }
         });
-
     }
 
     private void saveBeaconInfo(Collection<Beacon> collection)

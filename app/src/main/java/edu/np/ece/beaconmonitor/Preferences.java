@@ -11,12 +11,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
+import android.widget.EditText;
 
 import org.altbeacon.beacon.Region;
 
 public class Preferences {
     public static ProgressDialog loading;
     public static boolean isShownLoading = false;
+
+    public static String student_major = "1";
+    public static String student_minor = "2";
 
     public static int cnt = 0;
 
