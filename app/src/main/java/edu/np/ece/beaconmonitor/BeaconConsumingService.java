@@ -25,10 +25,10 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
     private static boolean checkDate = true;
     private static boolean checkTime = true;
 
-    private static final String REGION_NAME = "MonitoringBeacon";
+//    private static final String REGION_NAME = "MonitoringBeacon";
 //    private static final String REGION_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
 //    private static final String REGION_UUID = "23A01AF0-232A-4518-9C0E-323FB773F5EF";
-    private static final String REGION_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+//    private static final String REGION_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String INTENT_NAME_TOAST = "edu.np.ece.beaconmonitor.toast";
 
     Context context;
@@ -88,7 +88,7 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
             @Override
             public void didEnterRegion(Region region) {
                 Log.i(TAG, "didEnterRegion(): " + region.getUniqueId());
-                if (region.getUniqueId().compareTo(REGION_NAME) == 0)
+                if (region.getUniqueId().compareTo(Preferences.getVenueBeaconName(context)) == 0)
                 {
                     //TODO Check date of the lesson in local data
                     if (checkDate == true)
@@ -132,7 +132,9 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
         });
 
         try {
-            Region monitoringRegion = new Region("MonitoringBeacon", Identifier.parse(REGION_UUID), null, null);
+            String Region_Name = Preferences.getVenueBeaconName(context);
+            String Region_UUID = Preferences.getVenueBeaconUUID(context);
+            Region monitoringRegion = new Region(Region_Name, Identifier.parse(Region_UUID), null, null);
             beaconManager.startMonitoringBeaconsInRegion(monitoringRegion);
         } catch (RemoteException e) {
             Log.e(TAG, e.getMessage(), e);

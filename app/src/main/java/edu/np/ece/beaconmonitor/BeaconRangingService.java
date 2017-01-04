@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.EditText;
 
 import com.google.gson.JsonObject;
 
@@ -39,9 +38,9 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
     private ArrayList<String> beaconList;
 
     private static final String INTENT_NAME_TOAST = "edu.np.ece.beaconmonitor.toast";
-    private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
+//    private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
 //    private static final String LESSON_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
-    private static final String LESSON_NAME = "LessonBeacon";
+//    private static final String LESSON_NAME = "LessonBeacon";
 
     private static boolean isTimeUp = false;
     private static boolean isDataSent = false;
@@ -110,7 +109,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
 //                broadcastIntent.putExtra("message", "didRangeBeaconsInRegion() is called.");
 //                sendBroadcast(broadcastIntent);
 
-                if (region.getUniqueId().compareToIgnoreCase(LESSON_NAME) == 0)
+                if (region.getUniqueId().compareToIgnoreCase(Preferences.getLessonBeaconName(context)) == 0)
                 {
                     saveBeaconInfo(collection);
                 }
@@ -118,6 +117,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         });
 
         try {
+            String LESSON_UUID = Preferences.getLessonBeaconUUID(context);
+            String LESSON_NAME = Preferences.getLessonBeaconName(context);
             Identifier identifier = Identifier.parse(LESSON_UUID);
             Region lessonRegion = new Region(LESSON_NAME, identifier, null, null);
             beaconManager.startRangingBeaconsInRegion(lessonRegion);
@@ -272,8 +273,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
 
             try
             {
-                Identifier identifier = Identifier.parse(LESSON_UUID);
-                Region lessonRegion = new Region(LESSON_NAME, identifier, null, null);
+                Identifier identifier = Identifier.parse(Preferences.getLessonBeaconUUID(context));
+                Region lessonRegion = new Region(Preferences.getLessonBeaconName(context), identifier, null, null);
                 beaconManager.stopRangingBeaconsInRegion(lessonRegion);
                 beaconManager.unbind(this);
             } catch (RemoteException e)

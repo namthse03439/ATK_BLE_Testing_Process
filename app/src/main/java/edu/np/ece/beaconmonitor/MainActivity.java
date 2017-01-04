@@ -30,8 +30,11 @@ public class MainActivity extends AppCompatActivity {
     Intent mServiceIntent;
     private BeaconConsumingService mSensorService;
 
-    private static final String REGION_NAME = "TestBeacon";
-    private static final String REGION_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
+    private static final String VENUE_NAME = "MonitoringVenueBeacon";
+    private static final String VENUE_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+
+    private static final String LESSON_NAME = "RangingLessonBeacon";
+    private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         Preferences.setActivity(this);
+
+        //TODO Request venue and lesson information from server
+        //TODO Save data to local
+        Preferences.saveDataToLocal(VENUE_NAME, VENUE_UUID, LESSON_NAME, LESSON_UUID);
 
         mSensorService = new BeaconConsumingService();
         mServiceIntent = new Intent(context, mSensorService.getClass());
