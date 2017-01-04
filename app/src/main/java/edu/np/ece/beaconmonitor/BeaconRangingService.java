@@ -1,6 +1,7 @@
 package edu.np.ece.beaconmonitor;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -45,6 +46,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
     private static boolean isTimeUp = false;
     private static boolean isDataSent = false;
 
+    Context context;
 
     public BeaconRangingService() {
         super();
@@ -59,6 +61,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         beaconManager.bind(this);
 
         beaconList = new ArrayList<>();
+        context = getApplicationContext();
     }
 
     @Override
@@ -119,7 +122,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
             Region lessonRegion = new Region(LESSON_NAME, identifier, null, null);
             beaconManager.startRangingBeaconsInRegion(lessonRegion);
 
-            new CountDownTimer(30000, 1000) {
+            Preferences.notify(context, "ATK_BLE Process", "Start timer in 10 seconds!");
+            new CountDownTimer(10000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
 
@@ -160,6 +164,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
 
     private void sendDataToServer()
     {
+        Log.d(TAG, "sendDataToServer()");
         isDataSent = true;
 
         // Notify to finish collecting data
@@ -168,9 +173,11 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
         if (beaconList.size() > 0)
         {
-            broadcastIntent.putExtra("message", "Sending data to Server\n"
-                    + "(" + Preferences.student_major + ", " + Preferences.student_minor + " )\n"
-                    + "(" + beaconList.get(0) + ", " + beaconList.get(1) + " )" );
+            content = new String("Sending data to Server\n"
+                    + "(" + Preferences.student_major + ", " + Preferences.student_minor + ")\n"
+                    + "(" + beaconList.get(0) + ", " + beaconList.get(1) + ")");
+            broadcastIntent.putExtra("message", content);
+            Preferences.notify(context, "ATK_BLE Process", content);
         }
         else
         {
@@ -208,7 +215,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         }
 
         Preferences.showLoading(Preferences.getActivity(), "Testing", "Sending data to server...");
-        String auCode = "Bearer QAMoEorbGpaE6j1__4MyCQRedeHDskzJ";
+        String auCode = "Bearer EU9nhMR0QfFUuxFoRYpboeYc3Ev4_Zvb";
         StringClient client = ServiceGenerator.createService(StringClient.class, auCode);
         Call<ResponseBody> call = client.pushStudentArrayList(toUp);
         call.enqueue (new Callback<ResponseBody>() {
@@ -216,16 +223,19 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     Preferences.dismissLoading();
+
                     int messageCode = response.code();
+                    Log.d(TAG, "Attendance recorded successfully: " + messageCode);
 
-                    if (messageCode == 200) // SUCCESS
-                    {
-                        Preferences.notify(getApplicationContext(), "ATK_BLE", "Attendance recorded successfully for subject MAC101.");
-                    }
-                    else
-                    {
-
-                    }
+                    Preferences.notify(getApplicationContext(), "ATK_BLE Process", "Send data to server successfully!");
+//                    if (messageCode == 200) // SUCCESS
+//                    {
+//                        Preferences.notify(getApplicationContext(), "ATK_BLE", "Attendance recorded successfully for subject MAC101.");
+//                    }
+//                    else
+//                    {
+//
+//                    }
                 }
                 catch (Exception e) {
                     e.printStackTrace();

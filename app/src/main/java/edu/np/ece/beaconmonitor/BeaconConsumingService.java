@@ -1,6 +1,7 @@
 package edu.np.ece.beaconmonitor;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -30,6 +31,8 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
     private static final String REGION_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String INTENT_NAME_TOAST = "edu.np.ece.beaconmonitor.toast";
 
+    Context context;
+
     public BeaconConsumingService() {
         super();
     }
@@ -41,6 +44,8 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
+
+        context = getApplicationContext();
     }
 
     @Override
@@ -94,6 +99,7 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
                             //TODO Check lesson is processed or not
                             if (isProcessStarted == false)
                             {
+                                Preferences.notify(context, "ATK_BLE Process", "Enter Venue Beacon!");
                                 isProcessStarted = true;
                                 Intent intent = new Intent(getApplicationContext(), BeaconRangingService.class);
                                 startService(intent);
@@ -111,6 +117,9 @@ public class BeaconConsumingService extends Service implements BeaconConsumer {
             @Override
             public void didExitRegion(Region region) {
                 Log.i(TAG, "didExitRegion(): " + region.getUniqueId());
+
+                Preferences.notify(context, "ATK_BLE Process", "Exit Venue Beacon!");
+
                 //-- Test
                 Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
                 broadcastIntent.putExtra("message", "service.didExitRegion()");

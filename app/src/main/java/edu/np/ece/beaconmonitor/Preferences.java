@@ -65,14 +65,15 @@ public class Preferences {
     }
 
     public static void notify(Context context, String title, String content) {
-        boolean isBeingDebugged = android.os.Debug.isDebuggerConnected();
-        if(!isBeingDebugged){
-            return;
-        }
+//        boolean isBeingDebugged = android.os.Debug.isDebuggerConnected();
+//        if(!isBeingDebugged){
+//            return;
+//        }
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setSmallIcon(R.mipmap.ic_launcher2)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .build();
         mNotificationManager.notify(Preferences.cnt++, noti);

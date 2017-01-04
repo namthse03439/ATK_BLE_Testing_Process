@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Created by zqi2 on 17/12/16.
@@ -46,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
         mServiceIntent = new Intent(context, mSensorService.getClass());
         if (!isMyServiceRunning(mSensorService.getClass())) {
             startService(mServiceIntent);
+            if (!isMyServiceRunning(mSensorService.getClass())) {
+                Preferences.notify(context, "Service", "Fail to start Sensor Service!");
+            }
+            else
+            {
+                Preferences.notify(context, "Service", "Sensor Service started successfully!");
+            }
+        }
+        else
+        {
+            Preferences.notify(context, "Service", "Sensor Service started successfully!");
         }
 
         Button ATK_BLE_Button = (Button) findViewById(R.id.clearBtn);

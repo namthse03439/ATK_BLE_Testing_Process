@@ -17,5 +17,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(BeaconConsumingService.class.getSimpleName(), "BootReceiver starting Service...");
         context.startService(new Intent(context, BeaconConsumingService.class));
+
+        Preferences.notify(context, "Broadcast Receiver", "Start service after reboot device");
     }
 }
