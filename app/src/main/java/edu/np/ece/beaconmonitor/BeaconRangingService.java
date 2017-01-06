@@ -123,8 +123,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
             Region lessonRegion = new Region(LESSON_NAME, identifier, null, null);
             beaconManager.startRangingBeaconsInRegion(lessonRegion);
 
-            Preferences.notify(context, "ATK_BLE Process", "Start timer in 10 seconds!");
-            new CountDownTimer(10000, 1000) {
+            Preferences.notify(context, "ATK_BLE Process", "Start timer in 30 seconds!");
+            new CountDownTimer(30000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
 
@@ -168,13 +168,10 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         Log.d(TAG, "sendDataToServer()");
         isDataSent = true;
 
-        // Notify to finish collecting data
-        String content = null;
-
         Intent broadcastIntent = new Intent(INTENT_NAME_TOAST);
         if (beaconList.size() > 0)
         {
-            content = new String("Sending data to Server\n"
+            String content = new String("Sending data to Server\n"
                     + "(" + Preferences.student_major + ", " + Preferences.student_minor + ")\n"
                     + "(" + beaconList.get(0) + ", " + beaconList.get(1) + ")");
             broadcastIntent.putExtra("message", content);
