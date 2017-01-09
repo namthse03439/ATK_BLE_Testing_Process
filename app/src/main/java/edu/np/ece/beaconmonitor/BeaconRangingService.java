@@ -45,7 +45,7 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
     private static boolean isTimeUp = false;
     private static boolean isDataSent = false;
 
-    Context context;
+    private Context context;
 
     public BeaconRangingService() {
         super();
@@ -172,20 +172,21 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         if (beaconList.size() > 0)
         {
             String content = new String("Sending data to Server\n"
-                    + "(" + Preferences.student_major + ", " + Preferences.student_minor + ")\n"
+                    + "(" + Preferences.getStudentBeaconMajor(context) + ", " + Preferences.getStudentBeaconMinor(context) + ")\n"
                     + "(" + beaconList.get(0) + ", " + beaconList.get(1) + ")");
             broadcastIntent.putExtra("message", content);
+            sendBroadcast(broadcastIntent);
+
             Preferences.notify(context, "ATK_BLE Process", content);
         }
         else
         {
             broadcastIntent.putExtra("message", "Did not find any beacons in range");
-        }
-        sendBroadcast(broadcastIntent);
+            sendBroadcast(broadcastIntent);
 
-        if (beaconList.size() == 0)
-        {
+            Preferences.notify(context, "ATK_BLE Process", "No virtual beacon in range");
             return;
+
         }
 
         int count = 2;
@@ -194,8 +195,8 @@ public class BeaconRangingService extends Service implements BeaconConsumer {
         String minor = "minor";
         JsonObject toUp = new JsonObject();
 
-        toUp.addProperty("major1", Preferences.student_major);
-        toUp.addProperty("minor1", Preferences.student_minor);
+        toUp.addProperty("major1", Preferences.getStudentBeaconMajor(context));
+        toUp.addProperty("minor1", Preferences.getStudentBeaconMinor(context));
 
         for(int i = 0; i < beaconList.size(); i++)
         {

@@ -1,9 +1,5 @@
 package edu.np.ece.beaconmonitor;
 
-/**
- * Created by Sonata on 6/13/2016.
- */
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,12 +17,11 @@ public class Preferences {
     public static ProgressDialog loading;
     public static boolean isShownLoading = false;
 
-    public static String student_major = "1";
-    public static String student_minor = "2";
-
     public static int cnt = 0;
 
     public static Activity activity;
+
+    public static boolean isEnterVenueRegion = false;
 
     public static void showLoading(final Activity activity, final String title, final String message){
         try {
@@ -58,7 +53,8 @@ public class Preferences {
     }
 
     public static void saveDataToLocal(String Venue_Beacon_Name, String Venue_Beacon_UUID,
-                                       String Lesson_Beacon_Name, String Lesson_Beacon_UUID)
+                                       String Lesson_Beacon_Name, String Lesson_Beacon_UUID,
+                                       String Student_Beacon_Major, String Student_Beacon_Minor)
     {
         SharedPreferences pref = activity.getSharedPreferences(SharedPreferencesTag, SharedPreferences_ModeTag);
         SharedPreferences.Editor editor = pref.edit();
@@ -67,6 +63,8 @@ public class Preferences {
         editor.putString("Venue_Beacon_UUID", Venue_Beacon_UUID);
         editor.putString("Lesson_Beacon_Name", Lesson_Beacon_Name);
         editor.putString("Lesson_Beacon_UUID", Lesson_Beacon_UUID);
+        editor.putString("Student_Beacon_Major", Student_Beacon_Major);
+        editor.putString("Student_Beacon_Minor", Student_Beacon_Minor);
 
         editor.apply();
     }
@@ -99,6 +97,20 @@ public class Preferences {
         return Lesson_Beacon_UUID;
     }
 
+    public static String getStudentBeaconMajor(Context context)
+    {
+        SharedPreferences pref = context.getSharedPreferences(SharedPreferencesTag, SharedPreferences_ModeTag);
+        String Student_Beacon_Major = pref.getString("Student_Beacon_Major", null);
+        return Student_Beacon_Major;
+    }
+
+    public static String getStudentBeaconMinor(Context context)
+    {
+        SharedPreferences pref = context.getSharedPreferences(SharedPreferencesTag, SharedPreferences_ModeTag);
+        String Student_Beacon_Minor = pref.getString("Student_Beacon_Minor", null);
+        return Student_Beacon_Minor;
+    }
+
     public static void setActivity(Activity act)
     {
         activity = act;
@@ -106,6 +118,16 @@ public class Preferences {
 
     public static Activity getActivity() {
         return activity;
+    }
+
+    public static void setEnterVenueRegion(boolean status)
+    {
+        isEnterVenueRegion = status;
+    }
+
+    public static boolean getEnterVenueRegion()
+    {
+        return isEnterVenueRegion;
     }
 
     public static void notify(Context context, String title, String content) {

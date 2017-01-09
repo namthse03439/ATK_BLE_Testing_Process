@@ -39,10 +39,10 @@ public class MyApplication extends Application implements BootstrapNotifier {
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BleUtil.LAYOUT_IBEACON));
 
         // wake up the app when any beacon is seen (you can specify specific id filers in the parameters below)
-        Region region = new Region("AnyBeacon", null, null, null);
-        ArrayList regionList = new ArrayList<Region>();
-        regionList.add(region);
-        regionBootstrap = new RegionBootstrap(this, regionList);
+//        Region region = new Region("AnyBeacon", null, null, null);
+//        ArrayList regionList = new ArrayList<Region>();
+//        regionList.add(region);
+//        regionBootstrap = new RegionBootstrap(this, regionList);
 
     }
 
