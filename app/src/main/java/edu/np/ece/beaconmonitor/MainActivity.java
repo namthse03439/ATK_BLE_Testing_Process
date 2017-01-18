@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LESSON_NAME = "RangingLessonBeacon";
     private static final String LESSON_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
 
-    private static final String STUDENT_MAJOR = "3";
-    private static final String STUDENT_MINOR = "4";
+    private static final String STUDENT_MAJOR = "1";
+    private static final String STUDENT_MINOR = "2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
